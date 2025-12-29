@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Quest - Juego de Rompecabezas Online Gratis | Desafía tu Mente</title>
+    <meta name="description" content="Juega Puzzle Quest gratis online. Rompecabezas deslizante con múltiples niveles, logros y ranking. Mejora tu agilidad mental con este adictivo juego de puzzles.">
+    <meta name="keywords" content="puzzle, rompecabezas, juego online, gratis, sliding puzzle, brain training, mental agility">
+    <meta name="author" content="Puzzle Quest">
+    <meta name="robots" content="index, follow">
+    <meta name="google-site-verification" content="YOUR-VERIFICATION-CODE-HERE" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-domain.vercel.app/">
+    <meta property="og:title" content="Puzzle Quest - Juego de Rompecabezas Online">
+    <meta property="og:description" content="Desafía tu mente con nuestro adictivo juego de puzzles. Múltiples niveles, logros y ranking global.">
+    <meta property="og:image" content="https://your-domain.vercel.app/favicon.svg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://your-domain.vercel.app/">
+    <meta property="twitter:title" content="Puzzle Quest - Juego de Rompecabezas Online">
+    <meta property="twitter:description" content="Desafía tu mente con nuestro adictivo juego de puzzles.">
+    <meta property="twitter:image" content="https://your-domain.vercel.app/favicon.svg">
+    
+    <link rel="canonical" href="https://your-domain.vercel.app/">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#764ba2">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX"
+         crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <h1>🧩 Puzzle Quest</h1>
+            <form id="login-form" onsubmit="login(); return false;">
+                <input type="text" id="username" placeholder="Usuario" autocomplete="username">
+                <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password">
+                <button type="submit">Iniciar Sesión</button>
+                <button type="button" onclick="showRegister()">Registrarse</button>
+            </form>
+            <form id="register-form" style="display:none;" onsubmit="register(); return false;">
+                <input type="text" id="reg-username" placeholder="Usuario" autocomplete="username">
+                <input type="password" id="reg-password" placeholder="Contraseña" autocomplete="new-password">
+                <button type="submit">Crear Cuenta</button>
+                <button type="button" onclick="showLogin()">Volver</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <div class="header">
+            <div class="user-info">
+                <span id="player-name"></span>
+                <button id="install-btn" onclick="installApp()">📱 Instalar App</button>
+                <button onclick="logout()">Salir</button>
+            </div>
+            <div class="stats">
+                <div class="stat">Nivel: <span id="level">1</span></div>
+                <div class="stat">XP: <span id="xp">0</span>/<span id="xp-needed">100</span></div>
+                <div class="xp-bar"><div id="xp-progress"></div></div>
+            </div>
+        </div>
+
+        <div class="game-container">
+            <!-- Ad Space - Top Banner -->
+            <div class="ad-space ad-banner" id="ad-top">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXX"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            
+            <div class="puzzle-info">
+                <h2>Puzzle <span id="puzzle-number">1</span></h2>
+                <div class="difficulty-indicator">
+                    <span class="diff-label">Dificultad:</span>
+                    <span id="current-difficulty" class="diff-value">Fácil</span>
+                </div>
+                <div class="stats-row">
+                    <span>⏱️ <span id="timer">0:00</span></span>
+                    <span>🎯 <span id="moves">0</span> movimientos</span>
+                    <span>⭐ <span id="score">0</span> pts</span>
+                </div>
+                <div class="difficulty">
+                    <button onclick="setDifficulty(3)" class="diff-btn active" data-size="3">3x3</button>
+                    <button onclick="setDifficulty(4)" class="diff-btn" data-size="4">4x4</button>
+                    <button onclick="setDifficulty(5)" class="diff-btn" data-size="5">5x5</button>
+                </div>
+            </div>
+            
+            <div id="puzzle-grid"></div>
+            
+            <div class="controls">
+                <button onclick="resetPuzzle()">🔄 Reiniciar</button>
+                <button onclick="showHint()">💡 Pista (<span id="hint-count">3</span>)</button>
+                <button onclick="skipPuzzle()" class="skip-btn">⏭️ Saltar (3 restantes)</button>
+            </div>
+            
+            <!-- Ad Space - Rectangle -->
+            <div class="ad-space ad-rectangle" id="ad-game">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXX"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            
+            <div class="achievements" id="achievements"></div>
+        </div>
+
+        <div class="leaderboard">
+            <h3>🏆 Top Jugadores</h3>
+            <div id="leaderboard-list"></div>
+            
+            <!-- Ad Space - Sidebar -->
+            <div class="ad-space ad-sidebar" id="ad-sidebar">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXX"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+        
+        <footer style="text-align: center; margin-top: 30px; opacity: 0.7; font-size: 12px;">
+            <a href="/privacy.html" style="color: white; margin: 0 10px;">Política de Privacidad</a> | 
+            <a href="/terms.html" style="color: white; margin: 0 10px;">Términos de Servicio</a>
+        </footer>
+    </div>
+
+    <div id="level-up-modal" class="modal">
+        <div class="modal-content">
+            <h2>🎉 ¡Subiste de Nivel!</h2>
+            <p class="level-display">Nivel <span id="new-level"></span></p>
+            <p>✨ Nuevos puzzles desbloqueados</p>
+            <p>💡 +2 Pistas</p>
+            <button onclick="closeModal()">Continuar</button>
+        </div>
+    </div>
+
+    <script src="sounds.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

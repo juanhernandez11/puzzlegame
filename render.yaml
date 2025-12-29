@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: puzzle-game
+    env: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SECRET
+        value: puzzle-secret-2024-secure-key-xyz789

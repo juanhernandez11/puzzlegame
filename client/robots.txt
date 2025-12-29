@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://puzzlegame-tau.vercel.app/sitemap.xml
