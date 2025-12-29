@@ -74,6 +74,8 @@ async function login() {
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
     
+    console.log('Login attempt:', {username, hasPassword: !!password});
+    
     if(!username || !password) {
         showNotification('Completa todos los campos', 'error');
         return;
@@ -86,23 +88,37 @@ async function login() {
     loginBtn.disabled = true;
     
     try {
+        console.log('Sending login request to:', `${API_URL}/login`);
+        
         const res = await fetch(`${API_URL}/login`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({username, password})
         });
+        
+        console.log('Response status:', res.status);
+        
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        
         const data = await res.json();
+        console.log('Login response:', {hasToken: !!data.token, error: data.error});
+        
         if(data.token) {
             token = data.token;
             localStorage.setItem('token', token);
             showNotification('✅ Bienvenido de vuelta!', 'success');
-            loadGame();
+            await loadGame();
         } else {
             showNotification(data.error || 'Credenciales incorrectas', 'error');
         }
     } catch(e) {
-        showNotification('Error de conexión. Verifica tu internet.', 'error');
         console.error('Login error:', e);
+        showNotification(`Error: ${e.message}`, 'error');
     } finally {
         loginBtn.textContent = originalText;
         loginBtn.disabled = false;
@@ -110,13 +126,27 @@ async function login() {
 }
 
 async function loadGame() {
+    console.log('Loading game with token:', !!token);
+    
     try {
         const res = await fetch(`${API_URL}/game`, {
-            headers: {'Authorization': token}
+            headers: {
+                'Authorization': token,
+                'Accept': 'application/json'
+            }
         });
+        
+        console.log('Game load response status:', res.status);
+        
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+        
         const data = await res.json();
+        console.log('Game data received:', {hasGameState: !!data.gameState, username: data.username});
         
         if(data.error) {
+            console.log('Game load error:', data.error);
             logout();
             return;
         }
@@ -137,8 +167,11 @@ async function loadGame() {
         initPuzzle();
         loadLeaderboard();
         updateSkipButton();
+        
+        console.log('Game loaded successfully');
     } catch(e) {
-        showNotification('Error al cargar el juego', 'error');
+        console.error('Load game error:', e);
+        showNotification(`Error al cargar: ${e.message}`, 'error');
     }
 }
 
@@ -530,9 +563,15 @@ function showNotification(message, type = 'info') {
 }
 
 // Inicializar cuando carga la página
+console.log('Page loaded, token exists:', !!token);
+console.log('API_URL:', API_URL);
+console.log('User agent:', navigator.userAgent);
+
 if(token) {
+    console.log('Auto-loading game with existing token');
     loadGame();
 } else {
+    console.log('No token, showing auth screen');
     document.getElementById('auth-screen').classList.add('active');
 }
 
