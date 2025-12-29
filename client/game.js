@@ -71,13 +71,19 @@ async function register() {
 }
 
 async function login() {
-    const username = document.getElementById('username').value;
+    const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
     
     if(!username || !password) {
         showNotification('Completa todos los campos', 'error');
         return;
     }
+    
+    // Mostrar loading
+    const loginBtn = document.querySelector('#login-form button[type="submit"]');
+    const originalText = loginBtn.textContent;
+    loginBtn.textContent = 'Iniciando...';
+    loginBtn.disabled = true;
     
     try {
         const res = await fetch(`${API_URL}/login`, {
@@ -89,12 +95,17 @@ async function login() {
         if(data.token) {
             token = data.token;
             localStorage.setItem('token', token);
+            showNotification('✅ Bienvenido de vuelta!', 'success');
             loadGame();
         } else {
             showNotification(data.error || 'Credenciales incorrectas', 'error');
         }
     } catch(e) {
-        showNotification('Error de conexión', 'error');
+        showNotification('Error de conexión. Verifica tu internet.', 'error');
+        console.error('Login error:', e);
+    } finally {
+        loginBtn.textContent = originalText;
+        loginBtn.disabled = false;
     }
 }
 
@@ -549,10 +560,58 @@ window.addEventListener('beforeinstallprompt', (e) => {
 
 // PWA Install Prompt
 let deferredPrompt;
+let installPromptShown = false;
+
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    
+    // Mostrar prompt después de 10 segundos si no se ha mostrado
+    if (!installPromptShown) {
+        setTimeout(() => {
+            if (deferredPrompt && !installPromptShown) {
+                showInstallBanner();
+            }
+        }, 10000);
+    }
 });
+
+function showInstallBanner() {
+    if (installPromptShown) return;
+    
+    const banner = document.createElement('div');
+    banner.className = 'install-prompt show';
+    banner.innerHTML = `
+        <div>
+            <strong>📱 ¡Instala Puzzle Quest!</strong><br>
+            <small>Juega offline y accede rápidamente</small>
+        </div>
+        <div>
+            <button onclick="installFromBanner()">Instalar</button>
+            <button onclick="dismissBanner()">Ahora no</button>
+        </div>
+    `;
+    document.body.appendChild(banner);
+    installPromptShown = true;
+    
+    // Auto-dismiss después de 15 segundos
+    setTimeout(() => {
+        if (document.body.contains(banner)) {
+            banner.remove();
+        }
+    }, 15000);
+}
+
+function installFromBanner() {
+    const banner = document.querySelector('.install-prompt');
+    if (banner) banner.remove();
+    installApp();
+}
+
+function dismissBanner() {
+    const banner = document.querySelector('.install-prompt');
+    if (banner) banner.remove();
+}
 
 function installApp() {
     if(deferredPrompt) {
@@ -560,6 +619,9 @@ function installApp() {
         deferredPrompt.userChoice.then((choiceResult) => {
             if (choiceResult.outcome === 'accepted') {
                 showNotification('✅ App instalada correctamente', 'success');
+                // Ocultar botón de instalación
+                const installBtn = document.getElementById('install-btn');
+                if (installBtn) installBtn.style.display = 'none';
             }
             deferredPrompt = null;
         });
