@@ -143,12 +143,13 @@ async function register() {
         if(data.token) {
             token = data.token;
             localStorage.setItem('token', token);
+            showNotification('✅ Cuenta creada!', 'success');
             loadGame();
         } else {
             showNotification(data.error || 'Error al registrar', 'error');
         }
     } catch(e) {
-        showNotification('Error de conexión', 'error');
+        showNotification('Error de conexión: ' + e.message, 'error');
     }
 }
 
@@ -164,7 +165,7 @@ async function login() {
     }
     
     // Mostrar loading
-    const loginBtn = document.querySelector('#login-form button[type="submit"]');
+    const loginBtn = document.querySelector('#login-form button');
     const originalText = loginBtn.textContent;
     loginBtn.textContent = 'Iniciando...';
     loginBtn.disabled = true;
@@ -172,20 +173,16 @@ async function login() {
     try {
         console.log('Sending login request to:', `${API_URL}/login`);
         
+        // Simplified fetch for mobile compatibility
         const res = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({username, password})
         });
         
         console.log('Response status:', res.status);
-        
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
         
         const data = await res.json();
         console.log('Login response:', {hasToken: !!data.token, error: data.error});
@@ -213,16 +210,11 @@ async function loadGame() {
     try {
         const res = await fetch(`${API_URL}/game`, {
             headers: {
-                'Authorization': token,
-                'Accept': 'application/json'
+                'Authorization': token
             }
         });
         
         console.log('Game load response status:', res.status);
-        
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-        }
         
         const data = await res.json();
         console.log('Game data received:', {hasGameState: !!data.gameState, username: data.username});
