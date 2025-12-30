@@ -42,6 +42,88 @@ function showRegister() {
     document.getElementById('register-form').style.display = 'block';
 }
 
+async function testConnection() {
+    const testBtn = event.target;
+    const originalText = testBtn.textContent;
+    testBtn.textContent = '🔄 Probando...';
+    testBtn.disabled = true;
+    
+    const results = [];
+    
+    try {
+        // Test 1: Basic connectivity
+        results.push('\n🌐 PRUEBA DE CONEXIÓN:');
+        results.push('User Agent: ' + navigator.userAgent);
+        results.push('Online: ' + navigator.onLine);
+        
+        // Test 2: API Health Check
+        try {
+            const start = Date.now();
+            const res = await fetch(`${API_URL}/health`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+            const time = Date.now() - start;
+            const data = await res.json();
+            results.push(`\n✅ API Health: OK (${time}ms)`);
+            results.push('Status: ' + res.status);
+            results.push('Response: ' + JSON.stringify(data));
+        } catch (e) {
+            results.push('\n❌ API Health: FAILED');
+            results.push('Error: ' + e.message);
+        }
+        
+        // Test 3: CORS Test
+        try {
+            const res = await fetch(`${API_URL}/leaderboard`);
+            const data = await res.json();
+            results.push(`\n✅ CORS Test: OK`);
+            results.push('Leaderboard entries: ' + data.length);
+        } catch (e) {
+            results.push('\n❌ CORS Test: FAILED');
+            results.push('Error: ' + e.message);
+        }
+        
+        // Test 4: POST Test
+        try {
+            const res = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: 'test', password: 'test' })
+            });
+            const data = await res.json();
+            results.push(`\n✅ POST Test: OK`);
+            results.push('Status: ' + res.status);
+            results.push('Response: ' + JSON.stringify(data));
+        } catch (e) {
+            results.push('\n❌ POST Test: FAILED');
+            results.push('Error: ' + e.message);
+        }
+        
+    } catch (e) {
+        results.push('\n❌ General Error: ' + e.message);
+    }
+    
+    // Show results
+    const resultText = results.join('\n');
+    console.log(resultText);
+    
+    // Create modal to show results
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;';
+    modal.innerHTML = `
+        <div style="background:white;padding:20px;border-radius:10px;max-width:90%;max-height:80%;overflow-y:auto;">
+            <h3>Resultados del Test de Conexión</h3>
+            <pre style="font-size:12px;white-space:pre-wrap;">${resultText}</pre>
+            <button onclick="this.parentElement.parentElement.remove()" style="margin-top:10px;padding:10px;background:#007bff;color:white;border:none;border-radius:5px;">Cerrar</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    testBtn.textContent = originalText;
+    testBtn.disabled = false;
+}
+
 async function register() {
     const username = document.getElementById('reg-username').value;
     const password = document.getElementById('reg-password').value;
