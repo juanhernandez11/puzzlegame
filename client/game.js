@@ -569,6 +569,14 @@ console.log('Page loaded, token exists:', !!token);
 console.log('API_URL:', API_URL);
 console.log('User agent:', navigator.userAgent);
 
+// Mostrar botón de instalación solo en PC
+if (!isMobile()) {
+    const installBtn = document.getElementById('install-btn');
+    if (installBtn) {
+        installBtn.style.display = 'inline-block';
+    }
+}
+
 if(token) {
     console.log('Auto-loading game with existing token');
     loadGame();
@@ -591,11 +599,23 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// PWA Install Prompt
+// PWA Install Prompt - Solo para PC
 let deferredPrompt;
 let installPromptShown = false;
 
+// Detectar si es móvil
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           window.innerWidth <= 768;
+}
+
 window.addEventListener('beforeinstallprompt', (e) => {
+    // Solo permitir instalación en PC
+    if (isMobile()) {
+        e.preventDefault();
+        return;
+    }
+    
     e.preventDefault();
     deferredPrompt = e;
     
@@ -610,14 +630,14 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 function showInstallBanner() {
-    if (installPromptShown) return;
+    if (installPromptShown || isMobile()) return;
     
     const banner = document.createElement('div');
     banner.className = 'install-prompt show';
     banner.innerHTML = `
         <div>
-            <strong>📱 ¡Instala Puzzle Quest!</strong><br>
-            <small>Juega offline y accede rápidamente</small>
+            <strong>💻 ¡Instala Puzzle Quest en tu PC!</strong><br>
+            <small>Juega offline y accede rápidamente desde tu escritorio</small>
         </div>
         <div>
             <button onclick="installFromBanner()">Instalar</button>
@@ -666,15 +686,15 @@ function installApp() {
 
 function showInstallInstructions() {
     const instructions = `
-        Para instalar la app:
+        Para instalar la app en tu PC:
         
-        📱 Móvil:
-        - Chrome: Menú → "Instalar app"
-        - Safari: Compartir → "Añadir a inicio"
-        
-        💻 PC:
-        - Chrome: Ícono de instalación en la barra
+        💻 Escritorio:
+        - Chrome: Ícono de instalación en la barra de direcciones
         - Edge: Menú → "Instalar aplicación"
+        - Firefox: Menú → "Instalar sitio como aplicación"
+        
+        Nota: Esta aplicación está optimizada para PC.
+        En móvil puedes usar la versión web directamente.
     `;
     alert(instructions);
 }
