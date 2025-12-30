@@ -38,17 +38,17 @@
     <div id="auth-screen" class="screen active">
         <div class="auth-container">
             <h1>🧩 Puzzle Quest</h1>
-            <form id="login-form">
-                <input type="text" id="username" placeholder="Usuario" autocomplete="username">
-                <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password">
-                <button type="button" id="login-btn">Iniciar Sesión</button>
-                <button type="button" id="register-btn">Registrarse</button>
+            <form id="login-form" onsubmit="handleLogin(event); return false;">
+                <input type="text" id="username" placeholder="Usuario" autocomplete="username" required>
+                <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" required>
+                <button type="submit">Iniciar Sesión</button>
+                <button type="button" onclick="showRegister()">Registrarse</button>
             </form>
-            <form id="register-form" style="display:none;">
-                <input type="text" id="reg-username" placeholder="Usuario" autocomplete="username">
-                <input type="password" id="reg-password" placeholder="Contraseña" autocomplete="new-password">
-                <button type="button" id="create-btn">Crear Cuenta</button>
-                <button type="button" id="back-btn">Volver</button>
+            <form id="register-form" style="display:none;" onsubmit="handleRegister(event); return false;">
+                <input type="text" id="reg-username" placeholder="Usuario" autocomplete="username" required>
+                <input type="password" id="reg-password" placeholder="Contraseña" autocomplete="new-password" required>
+                <button type="submit">Crear Cuenta</button>
+                <button type="button" onclick="showLogin()">Volver</button>
             </form>
         </div>
     </div>

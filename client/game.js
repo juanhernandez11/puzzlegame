@@ -42,6 +42,16 @@ function showRegister() {
     document.getElementById('register-form').style.display = 'block';
 }
 
+function handleLogin(event) {
+    event.preventDefault();
+    login();
+}
+
+function handleRegister(event) {
+    event.preventDefault();
+    register();
+}
+
 async function register() {
     const username = document.getElementById('reg-username').value;
     const password = document.getElementById('reg-password').value;
@@ -558,37 +568,6 @@ function showNotification(message, type = 'info') {
 console.log('Page loaded, token exists:', !!token);
 console.log('API_URL:', API_URL);
 console.log('User agent:', navigator.userAgent);
-
-// Event listeners para móviles
-document.addEventListener('DOMContentLoaded', function() {
-    // Login button
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.addEventListener('click', login);
-        loginBtn.addEventListener('touchstart', login);
-    }
-    
-    // Register button
-    const registerBtn = document.getElementById('register-btn');
-    if (registerBtn) {
-        registerBtn.addEventListener('click', showRegister);
-        registerBtn.addEventListener('touchstart', showRegister);
-    }
-    
-    // Create account button
-    const createBtn = document.getElementById('create-btn');
-    if (createBtn) {
-        createBtn.addEventListener('click', register);
-        createBtn.addEventListener('touchstart', register);
-    }
-    
-    // Back button
-    const backBtn = document.getElementById('back-btn');
-    if (backBtn) {
-        backBtn.addEventListener('click', showLogin);
-        backBtn.addEventListener('touchstart', showLogin);
-    }
-});
 
 if(token) {
     console.log('Auto-loading game with existing token');
