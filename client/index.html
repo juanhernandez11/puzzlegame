@@ -41,15 +41,14 @@
             <form id="login-form">
                 <input type="text" id="username" placeholder="Usuario" autocomplete="username">
                 <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password">
-                <button type="button" onclick="login()">Iniciar Sesión</button>
-                <button type="button" onclick="showRegister()">Registrarse</button>
-                <button type="button" onclick="testConnection()" style="background: #28a745; margin-top: 10px;">🔗 Test Conexión</button>
+                <button type="button" id="login-btn">Iniciar Sesión</button>
+                <button type="button" id="register-btn">Registrarse</button>
             </form>
             <form id="register-form" style="display:none;">
                 <input type="text" id="reg-username" placeholder="Usuario" autocomplete="username">
                 <input type="password" id="reg-password" placeholder="Contraseña" autocomplete="new-password">
-                <button type="button" onclick="register()">Crear Cuenta</button>
-                <button type="button" onclick="showLogin()">Volver</button>
+                <button type="button" id="create-btn">Crear Cuenta</button>
+                <button type="button" id="back-btn">Volver</button>
             </form>
         </div>
     </div>
