@@ -1,4 +1,4 @@
-const API_URL = 'https://your-domain.vercel.app/api';
+const API_URL = 'https://puzzlegame-tau.vercel.app/api';
 let token = localStorage.getItem('token');
 let gameState = {
     level: 1,
@@ -670,14 +670,6 @@ if ('serviceWorker' in navigator) {
             .catch(error => console.log('SW registration failed'));
     });
 }
-
-// PWA Install Prompt
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    showInstallPrompt();
-});
 
 // PWA Install Prompt
 let deferredPrompt;
