@@ -564,6 +564,12 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
+// Detectar si es móvil
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           window.innerWidth <= 768;
+}
+
 // Inicializar cuando carga la página
 console.log('Page loaded, token exists:', !!token);
 console.log('API_URL:', API_URL);
@@ -602,12 +608,6 @@ if ('serviceWorker' in navigator) {
 // PWA Install Prompt - Solo para PC
 let deferredPrompt;
 let installPromptShown = false;
-
-// Detectar si es móvil
-function isMobile() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-           window.innerWidth <= 768;
-}
 
 window.addEventListener('beforeinstallprompt', (e) => {
     // Solo permitir instalación en PC
